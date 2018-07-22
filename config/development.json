@@ -1,3 +1,4 @@
 {
-  "applictionName": "BeSababa - development"
+  "applictionName": "BeSababa - development",
+  "mongoUrl": "mongodb://localhost:27017/besbaba-development"
 }

@@ -1,3 +1,4 @@
 {
-  "applictionName": "BeSababa"
+  "applictionName": "BeSababa",
+  "appPort": 3000
 }

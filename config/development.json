@@ -1,4 +1,5 @@
 {
   "applictionName": "BeSababa - development",
-  "mongoUrl": "mongodb://localhost:27017/besbaba-development"
+  "mongoUrl": "mongodb://localhost:27017/besbaba-development",
+  "appPort": 3000
 }

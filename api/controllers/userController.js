@@ -1,68 +1,39 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const User = require('../models/users/user');
 
 
 //Get all the users.
-exports.getUsers = (req,res,next) => {
-  User.find()
-  .select('_id name email phone')
-  .exec()
-  .then((docs) => {
-      const response = {
-        count: docs.length,
-        users: docs.map(doc => {
-          return{
-            _id:doc._id,
-            name: doc.name,
-            email: doc.email,
-            phone: doc.phone,
-            request: {
-              type: 'GET',
-              url: 'http://localhost:3000/users/' + doc._id
-            }
-          }
-        })
-      }
-      res.status(200).json(response);
-  })
-  .catch((err) => {
+exports.getUsers = async (req,res,next) => {
+  try{
+    const users = await User.find()
+    .select('_id name email phone').sort('name');
+    res.status(200).json({count: users.length, users:users});
+  }catch(err){
     res.status(500).json({error: err});
-  });
+  }
 };
 
 
 //Create a new user.
-exports.createUser = (req,res,next) => {
-  const user = new User({
-    _id: new mongoose.Types.ObjectId(),
-    name: req.body.name,
-    email:req.body.email,
-    phone:req.body.phone,
-    token:req.body.token,
-    password:req.body.password
-  });
-  user.save()
-  .then(result => {
+exports.createUser = async (req,res,next) => {
+  try{
+    let user = new User({
+      _id: new mongoose.Types.ObjectId(),
+      name: req.body.name,
+      email:req.body.email,
+      phone:req.body.phone,
+      token:req.body.token,
+      password:req.body.password
+    });
+    user = await user.save();
     res.status(201).json({
       message: 'An user was created successfully',
-      createUser: {
-        _id:result._id,
-        name:result.name,
-        email:result.email,
-        phone:result.phone,
-        request:{
-          type: 'GET',
-          url:'http://localhost:3000/users/' + result._id
-        }
-      }
+      createUser: user
     });
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(500).json({
-      error: err
-    })
-  });
+  }catch(err){
+    res.status(500).json({error: err});
+  }
 };
 
 //Get a user.

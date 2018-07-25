@@ -9,6 +9,9 @@ const config = require('config');
 const debug = require('debug')('app:startup');
 // const dbDebugger = require('debug')('app:db');
 
+// An object schema validator 
+const Joi = require('joi');
+
 // HTTP request logger middleware
 const morgan = require('morgan');
 

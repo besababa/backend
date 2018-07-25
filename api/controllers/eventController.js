@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Event = require('../models/events/event');
 
 //Get all the events.

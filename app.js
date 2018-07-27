@@ -9,7 +9,7 @@ const config = require('config');
 const debug = require('debug')('app:startup');
 // const dbDebugger = require('debug')('app:db');
 
-// An object schema validator 
+// An object schema validator
 const Joi = require('joi');
 
 // HTTP request logger middleware
@@ -22,9 +22,16 @@ const mongoose = require('mongoose');
 // require all routes
 const eventRoutes = require('./api/routes/events/events');
 const userRoutes = require('./api/routes/users/users');
+const auth = require('./api/routes/auth/auth');
 
 // checks for the custom-environment-variables.json
 const mongoConnetionString = config.get('mongoUrl');
+
+//checks for private key
+if(!config.get('jwtPrivateKey')){
+  console.error('FATAL ERROR: jwtPrivateKey is not defined.');
+  process.exit(1);
+}
 
 mongoose.connect(mongoConnetionString).then((value) => {
   debug('Connected to MongoDb');
@@ -59,6 +66,7 @@ app.use((req,res,next) => {
 // an incoming request must pass here
 app.use('/events',eventRoutes);
 app.use('/users',userRoutes);
+app.use('/auth',auth);
 
 // handel every request that reaches this line
 // no route was able to handle this request

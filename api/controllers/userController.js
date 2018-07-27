@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('../models/users/user');
+const {User, validate} = require('../models/users/user');
+const _ = require('lodash');
+const bcrypt = require('bcrypt');
 
 
 //Get all the users.
@@ -14,22 +16,22 @@ exports.getUsers = async (req,res,next) => {
   }
 };
 
-
 //Create a new user.
 exports.createUser = async (req,res,next) => {
+  const { error } = validate(req.body);
+  if(error) return res.status(400).json({error: error.details[0].message});
+
+  let user = await User.findOne({ email: req.body.email });
+  if(user) return res.status(400).json({error: 'User already registered'});
+
   try{
-    let user = new User({
-      _id: new mongoose.Types.ObjectId(),
-      name: req.body.name,
-      email:req.body.email,
-      phone:req.body.phone,
-      token:req.body.token,
-      password:req.body.password
-    });
-    user = await user.save();
+    user = new User(_.pick(req.body,['name','email','phone','token','password']));
+    const salt = await bcrypt.genSalt(12);
+    user.password = await bcrypt.hash(user.password,salt);
+    await user.save();
     res.status(201).json({
       message: 'An user was created successfully',
-      user: user
+      user: _.pick(user,['_id','name','email'])
     });
   }catch(err){
     res.status(500).json({error: err});
@@ -52,6 +54,8 @@ exports.getUser = async (req,res,next) => {
 
 //Update a user's details.
 exports.updateUser = async (req,res,next) => {
+  const { error } = validate(req.body);
+  if(error) return res.status(400).json({error: error.details[0].message});
   try{
     const id = req.params.userId;
     const updateOps = {};

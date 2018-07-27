@@ -1,4 +1,5 @@
 {
   "mongoUrl":"MONGODB_URL",
-  "appPort":"PORT"
+  "appPort":"PORT",
+  "jwtPrivateKey":"BESABABA_JWT"
 }

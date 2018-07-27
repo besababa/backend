@@ -1,28 +1,26 @@
+const Joi = require('joi');
 const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
-  name: { type: String, required: true, minlength:2, maxlength:60 },
+const User =  mongoose.model('User', new mongoose.Schema({
+  name: { type: String, minlength:2, maxlength:60, required: true },
   email: { type: String, minlength: 5, maxlength: 255, unique: true, required: true },
-  password: { type: String, required: true, minlength:8, maxlength:1024 },
+  password: { type: String, minlength:8, maxlength:1024, required: true },
   status: { type: Boolean , default: false },
   phone: String,
   token: String,
 },{
   timestamps: true
-});
+}));
 
-module.exports = mongoose.model('User', userSchema);
+function validateUser (user) {
+  const schema = {
+    name: Joi.string().min(2).max(60).required(),
+    email: Joi.string().min(5).max(255).required().email(),
+    password: Joi.string().min(8).max(1024).required()
+  };
 
-//match: /pattern/
-//enum: [array of valid strings] like ["shlomi","gonen"]
-//required: function() {return this.status} that return boolean
-/* A custom validateor
-  validate: {
-    type: Array,
-    validate: function(v){
-        return v && v.length > 0;
-    },
-    message: 'A course should have at least one tag'
-  }
-*/
+  return Joi.validate(user,schema);
+}
+
+exports.User = User;
+exports.validate = validateUser;

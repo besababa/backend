@@ -1,4 +1,5 @@
 {
   "applictionName": "BeSababa",
+  "jwtPrivateKey": "",
   "appPort": 3000
 }

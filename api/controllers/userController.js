@@ -29,7 +29,7 @@ exports.createUser = async (req,res,next) => {
     user = await user.save();
     res.status(201).json({
       message: 'An user was created successfully',
-      createUser: user
+      user: user
     });
   }catch(err){
     res.status(500).json({error: err});
@@ -37,58 +37,53 @@ exports.createUser = async (req,res,next) => {
 };
 
 //Get a user.
-exports.getUser = (req,res,next) => {
-  const id = req.params.userId;
-  User.findById(id)
-  .select('_id name email phone')
-  .exec()
-  .then((doc) => {
-    if(doc){
-      res.status(200).json(doc);
-    }else{
-      res.status(404).json({
-        message:"No valid entry found for provided ID"
-      });
+exports.getUser = async (req,res,next) => {
+  try{
+    const id = req.params.userId;
+    const user = await User.findById(id).select('_id name email phone');
+    if(!user) {
+      throw 'No valid entry found for provided ID';
     }
-  })
-  .catch((err) => {
-    res.status(500).json({error: err});
-  });
+    res.status(200).json({user: user});
+  }catch(err){
+      res.status(500).json({error:err});
+  }
 };
 
 //Update a user's details.
-exports.updateUser = (req,res,next) => {
-  const id = req.params.userId;
-  const updateOps = {};
-  for(const ops of req.body){
-     updateOps[ops.propName] = ops.value;
-  }
-  User.update({_id:id},{$set: updateOps}).exec()
-  .then((result) => {
+exports.updateUser = async (req,res,next) => {
+  try{
+    const id = req.params.userId;
+    const updateOps = {};
+    for(const ops of req.body){
+       updateOps[ops.propName] = ops.value;
+    }
+    const updatedUser = await User.findByIdAndUpdate(id,updateOps,{new:true});
+    if(!updatedUser) {
+      throw 'No valid entry found for provided ID';
+    }
     res.status(200).json({
       message:'Updated user!',
-      request:{
-        type: 'GET',
-        url:'http://localhost:3000/users/' + id
-      }
+      user: updatedUser
     });
-  })
-  .catch((err) => {
-    res.status(500).json({error:err});
-  });
+  }catch(err){
+      res.status(500).json({error:err});
+  }
 };
 
 //Delete a user.
-exports.deleteUser = (req,res,next) => {
-  const id = req.params.userId;
-  User.remove({_id:id}).exec()
-  .then((value) => {
+exports.deleteUser = async (req,res,next) => {
+  try{
+    const id = req.params.userId;
+    const deletedUser = await User.findByIdAndRemove(id);
+    if(!deletedUser) {
+      throw 'No valid entry found for provided ID';
+    }
     res.status(200).json({
       message:'Deleted user!',
-      id:id
+      user: deletedUser
     });
-  })
-  .catch((err) => {
+  }catch(err){
     res.status(500).json({error: err});
-  });
+  }
 };

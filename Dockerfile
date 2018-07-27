@@ -10,6 +10,7 @@ RUN useradd --no-create-home  \
 
 WORKDIR /eventz
 USER eventz
+ENV BESABABA_JWT=justadefaultvaluetostartwith
 
 RUN npm install
 

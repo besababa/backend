@@ -4,7 +4,6 @@ const {User, validate} = require('../models/users/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 
-
 //Get all the users.
 exports.getUsers = async (req,res,next) => {
   try{
@@ -29,7 +28,9 @@ exports.createUser = async (req,res,next) => {
     const salt = await bcrypt.genSalt(12);
     user.password = await bcrypt.hash(user.password,salt);
     await user.save();
-    res.status(201).json({
+
+    const token = user.generateAuthToken();
+    res.header('x-auth-token',token).status(201).json({
       message: 'An user was created successfully',
       user: _.pick(user,['_id','name','email'])
     });
@@ -41,8 +42,8 @@ exports.createUser = async (req,res,next) => {
 //Get a user.
 exports.getUser = async (req,res,next) => {
   try{
-    const id = req.params.userId;
-    const user = await User.findById(id).select('_id name email phone');
+    const id = req.user._id;
+    const user = await User.findById(id).select('-password');
     if(!user) {
       throw 'No valid entry found for provided ID';
     }

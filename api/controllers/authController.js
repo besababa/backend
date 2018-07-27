@@ -4,13 +4,8 @@ const Joi = require('joi');
 const {User} = require('../models/users/user');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const config = require('config');
 
-
-// 'register' -> POST /users
-// 'authenticate/{type}' -> /logins
-// 'authenticate/logout/{id}' -> /logins
+// Login user.
 exports.login = async (req,res,next) => {
   const { error } = validate(req.body);
   if(error) return res.status(400).json({error: error.details[0].message});
@@ -21,7 +16,7 @@ exports.login = async (req,res,next) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if(!validPassword) return res.status(400).json({error: 'Invalid email or password.'});
 
-  const token = jwt.sign({_id: user._id}, config.get('jwtPrivateKey'));
+  const token = user.generateAuthToken();
   res.status(201).json({
     message: 'User loged successfully!',
     token: token

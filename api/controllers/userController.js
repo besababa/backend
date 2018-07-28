@@ -24,13 +24,12 @@ exports.createUser = async (req,res,next) => {
   if(user) return res.status(400).json({error: 'User already registered'});
 
   try{
-    user = new User(_.pick(req.body,['name','email','phone','token','password']));
+    user = new User(_.pick(req.body,['name','email','phone','password']));
     const salt = await bcrypt.genSalt(12);
     user.password = await bcrypt.hash(user.password,salt);
     await user.save();
 
-    const token = user.generateAuthToken();
-    res.header('x-auth-token',token).status(201).json({
+    res.status.json({
       message: 'An user was created successfully',
       user: _.pick(user,['_id','name','email'])
     });
@@ -42,7 +41,9 @@ exports.createUser = async (req,res,next) => {
 //Get a user.
 exports.getUser = async (req,res,next) => {
   try{
-    const id = req.user._id;
+    //if using the /me approach
+    //const id = req.user._id;
+    const id = req.params.userId;
     const user = await User.findById(id).select('-password');
     if(!user) {
       throw 'No valid entry found for provided ID';

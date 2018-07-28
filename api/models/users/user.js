@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
   status: { type: Boolean , default: false },
   isAdmin:{ type: Boolean , default: false },
   phone: String,
-  access_token: String,
 },{
   timestamps: true
 });
@@ -28,9 +27,17 @@ function validateUser (user) {
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().min(8).max(1024).required()
   };
+  return Joi.validate(user,schema);
+}
 
+function validateLogin (user) {
+  const schema = {
+    email: Joi.string().required().email(),
+    password: Joi.string().required()
+  };
   return Joi.validate(user,schema);
 }
 
 exports.User = User;
 exports.validate = validateUser;
+exports.validateLogin = validateLogin;

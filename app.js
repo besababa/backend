@@ -15,6 +15,9 @@ const Joi = require('joi');
 // HTTP request logger middleware
 const morgan = require('morgan');
 
+// Authenticated user middleware
+const authUser = require('./api/middleware/auth');
+
 // Handel the body post request
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -65,7 +68,7 @@ app.use((req,res,next) => {
 // sets up a route middleware
 // an incoming request must pass here
 app.use('/events',eventRoutes);
-app.use('/users',userRoutes);
+app.use('/users', authUser ,userRoutes);
 app.use('/auth',auth);
 
 // handel every request that reaches this line
@@ -81,7 +84,7 @@ app.use((req,res,next) => {
 // like 500 that will throw automatically an error object
 app.use((error,req,res,next) => {
     res.status(error.status || 500);
-    res.json({error:error.message});    
+    res.json({error:error.message});
 });
 
 

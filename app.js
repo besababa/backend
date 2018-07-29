@@ -46,7 +46,7 @@ mongoose.connect(mongoConnetionString).then((value) => {
 if(app.get('env') === 'development') app.use(morgan('dev'));
 
 // sets a body-parser middleware to parse body data
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // solve the CORS Cross-Origin Resource Sharing error

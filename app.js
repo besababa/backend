@@ -45,9 +45,11 @@ mongoose.connect(mongoConnetionString).then((value) => {
 // sets up a log middleware - only for dev
 if(app.get('env') === 'development') app.use(morgan('dev'));
 
-// sets a body-parser middleware to parse body data
-app.use(bodyParser.urlencoded({extended: true}));
+// parse various different custom JSON types as JSON
 app.use(bodyParser.json());
+// create application/x-www-form-urlencoded parser
+app.use(bodyParser.urlencoded({extended: false}));
+
 
 // solve the CORS Cross-Origin Resource Sharing error
 // to set it only for my site use https://sitename.com instead of *

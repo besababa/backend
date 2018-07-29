@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
   password: { type: String, minlength:8, maxlength:1024, required: true },
   status: { type: Boolean , default: false },
   isAdmin:{ type: Boolean , default: false },
-  phone: String,
+  avatar:String,
+  phone: String
 },{
   timestamps: true
 });

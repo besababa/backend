@@ -69,7 +69,7 @@ app.use((req,res,next) => {
 // an incoming request must pass here
 app.use('/events',eventRoutes);
 app.use('/users', authUser ,userRoutes);
-app.use('/auth',auth);
+app.use('/',auth);
 
 // handel every request that reaches this line
 // no route was able to handle this request

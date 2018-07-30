@@ -1,6 +1,45 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Event = require('../models/events/event');
+const {Event, validate} = require('../models/events/event');
+const { User } = require('../models/users/user');
+const _ = require('lodash');
+
+//Create a new event.
+exports.createEvent = async (req,res,next) => {
+  const id = req.user._id;
+  let user = await User.findById(id);
+  if(!user) return res.status(404).json({error: 'User not found'});
+  req.body.user_id = id;
+
+  const { error } = validate(req.body);
+  if(error) return res.status(400).json({error: error.details[0].message});
+
+  try{
+    const parms = ['user_id','title','location','description','image_url','start_date','end_date'];
+    event = new Event(_.pick(req.body, parms));
+
+    await event.save();
+    res.status(200).json({
+      message: 'An event was created successfully',
+      event: _.pick(event,parms)
+    });
+  }catch(err){
+    res.status(500).json({error: err});
+  }
+};
+
+//Get all user events.
+exports.getUserEvents = async (req,res,next) => {
+  try{
+    const id = req.user._id;
+    let user = await User.findById(id);
+    if(!user) throw 'User not found';
+    const events = await Event.find({ user_id: id });
+    res.status(200).json({events: events});
+  }catch(err){
+    res.status(500).json({error: err});
+  }
+};
 
 //Get all the events.
 exports.getEvents =  (req,res,next) => {
@@ -35,50 +74,7 @@ exports.getEvents =  (req,res,next) => {
     });
 };
 
-//Create a new event.
-exports.createEvent = (req,res,next) => {
-    User.findById(req.body.userId)
-    .then(user => {
-      if(!user){
-        return res.status(404).json({
-          message:"User not found"
-        })
-      }
-      const event = new Event({
-        _id: new mongoose.Types.ObjectId(),
-        user_id: req.body.userId,
-        title: req.body.title,
-        location: req.body.location,
-        description: req.body.description,
-        image_url: req.body.image_url,
-        start_date: req.body.start_date,
-        end_date: req.body.end_date,
-        created_at: req.body.created_at,
-        updated_at: req.body.updated_at,
-      });
-      return event.save();
-    }).then(result => {
-      res.status(201).json({
-        message: 'An event was created successfully',
-        createEvent: {
-          _id:result._id,
-          name:result.name,
-          location:result.location,
-          request:{
-            type: 'GET',
-            url:'http://localhost:3000/events/' + result._id
-          }
-        }
-      });
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err
-      })
-    });
-};
-
-//Get an event.
+//Get an specific event.
 exports.getEvent = (req,res,next) => {
   const id = req.params.eventId;
   Event.findById(id)

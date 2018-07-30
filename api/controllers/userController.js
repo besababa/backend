@@ -29,7 +29,7 @@ exports.createUser = async (req,res,next) => {
     user.password = await bcrypt.hash(user.password,salt);
     await user.save();
 
-    res.status.json({
+    res.status(200).json({
       message: 'An user was created successfully',
       user: _.pick(user,['_id','name','email'])
     });

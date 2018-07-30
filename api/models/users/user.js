@@ -27,6 +27,10 @@ userSchema.methods.generateAuthToken = function() {
   return token;
 }
 
+userSchema.methods.verifyAuthToken = function(token){
+  return jwt.verify(token, config.get('jwtPrivateKey'));
+}
+
 const User =  mongoose.model('User', userSchema);
 
 function validateUser (user) {

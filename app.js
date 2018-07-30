@@ -25,7 +25,7 @@ const mongoose = require('mongoose');
 // require all routes
 const eventRoutes = require('./api/routes/events/events');
 const userRoutes = require('./api/routes/users/users');
-const auth = require('./api/routes/auth/auth');
+const authRoutes = require('./api/routes/auth/auth');
 
 // checks for the custom-environment-variables.json
 const mongoConnetionString = config.get('mongoUrl');
@@ -61,7 +61,7 @@ app.use((req,res,next) => {
   // the incoming request eq to options
   // a browser will always sand an options req (pre-flight) before other req
   if (req.method === 'OPTIONS') {
-      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET, OPTIONS');
       return res.status(200).json({});
   }
   next();
@@ -69,9 +69,9 @@ app.use((req,res,next) => {
 
 // sets up a route middleware
 // an incoming request must pass here
-app.use('/events',eventRoutes);
-app.use('/users', authUser ,userRoutes);
-app.use('/',auth);
+app.use('/events', authUser, eventRoutes);
+app.use('/users', authUser, userRoutes);
+app.use('/',authRoutes);
 
 // handel every request that reaches this line
 // no route was able to handle this request

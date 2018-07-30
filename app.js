@@ -48,7 +48,7 @@ if(app.get('env') === 'development') app.use(morgan('dev'));
 // parse various different custom JSON types as JSON
 app.use(bodyParser.json());
 // create application/x-www-form-urlencoded parser
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 // solve the CORS Cross-Origin Resource Sharing error
@@ -61,7 +61,7 @@ app.use((req,res,next) => {
   // the incoming request eq to options
   // a browser will always sand an options req (pre-flight) before other req
   if (req.method === 'OPTIONS') {
-      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET, OPTIONS');
+      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
       return res.status(200).json({});
   }
   next();

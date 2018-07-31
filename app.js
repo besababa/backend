@@ -53,17 +53,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // solve the CORS Cross-Origin Resource Sharing error
 // to set it only for my site use https://sitename.com instead of *
-app.use((req,res,next) => {
-  res.header('Access-Control-Allow-Origin','*');
-  res.header('Access-Control-Allow-Headrs',
-  'Origin, X-Requested-with, Content-Type, Accept, Authorization');
-
-  // the incoming request eq to options
-  // a browser will always sand an options req (pre-flight) before other req
-  if (req.method === 'OPTIONS') {
-      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-      return res.status(200).json({});
-  }
+//Headers
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.set ("Content-Type", "application/json");
   next();
 });
 

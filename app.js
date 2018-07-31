@@ -1,7 +1,7 @@
 // spins up an express appliction
 const express = require('express');
 const app = express();
-
+const cors = require('cors');
 // organizes hierarchical configurations - depends on NODE_ENV
 const config = require('config');
 
@@ -50,8 +50,8 @@ app.use(bodyParser.json());
 // create application/x-www-form-urlencoded parser
 app.use(bodyParser.urlencoded({extended: true}));
 
-
 // solve the CORS Cross-Origin Resource Sharing error
+app.use(cors());
 // to set it only for my site use https://sitename.com instead of *
 //Headers
 app.use(function(req, res, next) {

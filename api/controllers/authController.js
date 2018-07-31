@@ -17,6 +17,7 @@ exports.register = async (req,res,next) => {
     user = new User(_.pick(req.body,['name','email','phone','token','password']));
     const salt = await bcrypt.genSalt(12);
     user.password = await bcrypt.hash(user.password,salt);
+    user.status = true;
     await user.save();
 
     const token = user.generateAuthToken();

@@ -21,10 +21,11 @@ userSchema.methods.generateAuthToken = function() {
       _id: this._id,
       name:this.name,
       email:this.email,
-      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24),
+      status:this.status,
       isAdmin:this.isAdmin,
       avatar:this.avatar,
-      phone:this.phone
+      phone:this.phone,
+      exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
     },
     config.get('jwtPrivateKey')
   );

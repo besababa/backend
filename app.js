@@ -1,7 +1,10 @@
 // spins up an express appliction
 const express = require('express');
 const app = express();
+
+//enable CORS with various options.
 const cors = require('cors');
+
 // organizes hierarchical configurations - depends on NODE_ENV
 const config = require('config');
 
@@ -65,7 +68,7 @@ app.use(function(req, res, next) {
 
 // sets up a route middleware
 // an incoming request must pass here
-app.use('/events', authUser, eventRoutes);
+app.use('/events', eventRoutes);
 app.use('/users', authUser, userRoutes);
 app.use('/',authRoutes);
 

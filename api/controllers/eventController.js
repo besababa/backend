@@ -1,9 +1,48 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const readline = require('readline');
 const {Event, validate} = require('../models/events/event');
 const { User } = require('../models/users/user');
+const { OnThisDay } = require('../models/helpers/onThisDay');
 const _ = require('lodash');
 
+
+exports.titleOptions = async (req,res,next) => {
+  let dateobj= new Date() ;
+  let month = dateobj.getMonth() + 1;
+  let day = dateobj.getDate();
+  if(month<10){ month='0'+month }
+  if(day<10){ day='0'+day }
+  const now = day+month;
+  const onThisDay = await OnThisDay.find({ date: now });
+  const title = onThisDay[0].title;
+  res.status(200).json({
+    title: title,
+  });
+}
+
+// remove after upload file
+exports.onThisDayUpload = (req,res,next) => {
+  var lineReader = readline.createInterface({
+        input : fs.createReadStream('/var/www/besababa/public/timeanddate.txt'),
+        output: process.stdout,
+        terminal: false
+  });
+  lineReader.on('line',function(line){
+       let newLine = line.split(",").map(function (val) { return val; });
+
+       const onThisDay = new OnThisDay({
+         title:newLine[1],
+         date:newLine[0]
+         });
+       onThisDay.save();
+  });
+}
+
+
+////////////////// old routes ///////////////////////////////
+/*
 //Create a new event.
 exports.createEvent = async (req,res,next) => {
   const id = req.user._id;
@@ -132,3 +171,5 @@ exports.deleteEvent = (req,res,next) => {
     res.status(500).json({error: err});
   });
 };
+
+*/

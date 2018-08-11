@@ -25,7 +25,7 @@ exports.titleOptions = async (req,res,next) => {
 // remove after upload file
 exports.onThisDayUpload = (req,res,next) => {
   var lineReader = readline.createInterface({
-        input : fs.createReadStream('/var/www/besababa/public/timeanddate.txt'),
+        input : fs.createReadStream('/eventz/public/timeanddate.txt'),
         output: process.stdout,
         terminal: false
   });

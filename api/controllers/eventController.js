@@ -41,6 +41,26 @@ exports.onThisDayUpload = (req,res,next) => {
 }
 
 
+//Create a new event.
+exports.createEvent = async (req,res,next) => {
+  const title = req.body.title;
+  if(!title) return res.status(404).json({error: 'Event title is required'});
+  
+  const { error } = validate(req.body);
+  if(error) return res.status(400).json({error: error.details[0].message});
+
+  try{
+    event = new Event({title:title});
+    await event.save();
+    res.status(200).json({
+      event: event
+    });
+  }catch(err){
+    res.status(500).json({error: err});
+  }
+};
+
+
 ////////////////// old routes ///////////////////////////////
 /*
 //Create a new event.

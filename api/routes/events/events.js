@@ -16,6 +16,7 @@ router.put('/:eventId',eventController.updateEvent);
 router.delete('/:eventId',eventController.deleteEvent);
 */
 
+router.post('/', eventController.createEvent);
 router.get('/titles', eventController.titleOptions);
 router.get('/on-this-day-upload', eventController.onThisDayUpload);
 module.exports = router;

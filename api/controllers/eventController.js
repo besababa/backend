@@ -45,7 +45,7 @@ exports.onThisDayUpload = (req,res,next) => {
 exports.createEvent = async (req,res,next) => {
   const title = req.body.title;
   if(!title) return res.status(404).json({error: 'Event title is required'});
-  
+
   const { error } = validate(req.body);
   if(error) return res.status(400).json({error: error.details[0].message});
 
@@ -58,6 +58,25 @@ exports.createEvent = async (req,res,next) => {
   }catch(err){
     res.status(500).json({error: err});
   }
+};
+
+//Get an specific event.
+exports.getEvent = (req,res,next) => {
+  const id = req.params.eventId;
+  Event.findById(id)
+  .exec()
+  .then((doc) => {
+    if(doc){
+      res.status(200).json(doc);
+    }else{
+      res.status(404).json({
+        message:"No valid entry found for provided ID"
+      });
+    }
+  })
+  .catch((err) => {
+    res.status(500).json({error: err});
+  });
 };
 
 

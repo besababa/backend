@@ -5,7 +5,8 @@ const readline = require('readline');
 const {Event, validate} = require('../models/events/event');
 const { User } = require('../models/users/user');
 const { OnThisDay } = require('../models/helpers/onThisDay');
-const _ = require('lodash');
+var GphApiClient = require('giphy-js-sdk-core');
+client = GphApiClient('eSKYWfv72KFX8u5QZSrx6xc6g5crSscG&q');
 
 
 exports.titleOptions = async (req,res,next) => {
@@ -79,6 +80,33 @@ exports.getEvent = (req,res,next) => {
   });
 };
 
+// fetch from giphy
+exports.fetchDefaultImages = (req,res,next) => {
+  const title = req.body.title;
+  client.search('stickers', {"q": title,"limit":5})
+    .then((response) => {
+      let images = [];
+      response.data.forEach((gifObject) => {
+        let data = {"url":gifObject.images.fixed_height.gif_url,"alt_image": title + ' image'}
+        images.push( data );
+      });
+      return res.status(200).json({images});
+    })
+    .catch((err) => {
+        return res.status(404).json({err});
+    })
+}
+
+exports.uploadEventImage = async (req,res,next) => {
+    const eventId = req.body.id;
+    if(!eventId) return res.status(404).json({error: 'Please provide an event id'});
+    const eventImage = req.file;
+    let event = await User.findById(id);
+    if(!event) return res.status(404).json({error: 'No valid entry found for provided ID'});
+    event.image_url = eventImage;
+    const result = await event.save();
+    return res.status(200).json({result});
+}
 
 ////////////////// old routes ///////////////////////////////
 /*

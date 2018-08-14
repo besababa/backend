@@ -88,7 +88,7 @@ exports.fetchDefaultImages = (req,res,next) => {
     .then((response) => {
       let images = [];
       response.data.forEach((gifObject) => {
-        let data = {"url":gifObject.images.fixed_height.gif_url,"alt_image": title + ' image'}
+        let data = {"url":gifObject.images.fixed_height.gif_url, "alt_image": title + ' image'}
         images.push( data );
       });
       return res.status(200).json({images});
@@ -99,15 +99,25 @@ exports.fetchDefaultImages = (req,res,next) => {
 }
 
 exports.uploadEventImage = async (req,res,next) => {
-    const eventId = req.body.id;
-    if(!eventId) return res.status(404).json({error: 'Please provide an event id'});
-    const eventImage = req.file;
-    let event = await User.findById(id);
-    if(!event) return res.status(404).json({error: 'No valid entry found for provided ID'});
-    event.image_url = eventImage;
-    const result = await event.save();
-    return res.status(200).json({result});
+    const file = req.file;
+    if(!file) return res.status(404).json({error: 'Upload image not succeeded'});
+    let image = {"url":req.file.path, "alt_image": req.file.originalname}
+    return res.status(200).json({image});
 }
+
+
+// add to save image function
+/*
+console.log(req.file.path);
+const eventId = req.body.id;
+if(!eventId) return res.status(404).json({error: 'Please provide an event id'});
+const eventImage = req.file;
+let event = await User.findById(id);
+if(!event) return res.status(404).json({error: 'No valid entry found for provided ID'});
+event.image_url = eventImage;
+const result = await event.save();
+return res.status(200).json({result});
+*/
 
 ////////////////// old routes ///////////////////////////////
 /*

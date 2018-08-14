@@ -5,6 +5,7 @@ const readline = require('readline');
 const {Event, validate} = require('../models/events/event');
 const { User } = require('../models/users/user');
 const { OnThisDay } = require('../models/helpers/onThisDay');
+var _ = require('lodash');
 var GphApiClient = require('giphy-js-sdk-core');
 client = GphApiClient('eSKYWfv72KFX8u5QZSrx6xc6g5crSscG&q');
 
@@ -19,7 +20,7 @@ exports.titleOptions = async (req,res,next) => {
   const onThisDay = await OnThisDay.find({ date: now });
   const title = onThisDay[0].title;
   res.status(200).json({
-    title: title,
+    titles: [title],
   });
 }
 
@@ -54,7 +55,7 @@ exports.createEvent = async (req,res,next) => {
     event = new Event({title:title});
     await event.save();
     res.status(200).json({
-      event: event
+      event: _.pick(event,['_id','title'])
     });
   }catch(err){
     res.status(500).json({error: err});

@@ -8,7 +8,7 @@ const { OnThisDay } = require('../models/helpers/onThisDay');
 const _ = require('lodash');
 var GphApiClient = require('giphy-js-sdk-core');
 client = GphApiClient('eSKYWfv72KFX8u5QZSrx6xc6g5crSscG&q');
-const path = require("path");
+const path = require('path');
 
 
 exports.titleOptions = async (req,res,next) => {
@@ -89,7 +89,7 @@ exports.fetchDefaultImages = (req,res,next) => {
     .then((response) => {
       let images = [];
       response.data.forEach((gifObject) => {
-        let data = {"url":gifObject.images.fixed_height.gif_url, "alt_image": title + ' image'}
+        let data = {"url":gifObject.images.fixed_height.gif_url}
         images.push( data );
       });
       return res.status(200).json({images});

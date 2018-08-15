@@ -103,7 +103,7 @@ exports.fetchDefaultImages = (req,res,next) => {
 exports.uploadEventImage = async (req,res,next) => {
     const file = req.file;
     if(!file) return res.status(404).json({error: 'Upload image not succeeded'});
-    let image = {"url":path.resolve(req.file.path)}
+    let image = {"url":req.protocol + '://' + req.get('host') + '/' + req.file.path}
     return res.status(200).json({image});
 }
 

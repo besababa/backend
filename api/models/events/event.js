@@ -6,7 +6,7 @@ const eventSchema = new mongoose.Schema({
   title: { type: String, minlength:2, maxlength:100, required: true},
   location: { type: String, minlength:2, maxlength:100},
   description: { type: String, maxlength:700},
-  image_url: { type: String, maxlength:300},
+  image: { type: String, maxlength:300},
   start_date: { type: Date },
   end_date: { type: Date }
 },{

@@ -5,9 +5,10 @@ const readline = require('readline');
 const {Event, validate} = require('../models/events/event');
 const { User } = require('../models/users/user');
 const { OnThisDay } = require('../models/helpers/onThisDay');
-var _ = require('lodash');
+const _ = require('lodash');
 var GphApiClient = require('giphy-js-sdk-core');
 client = GphApiClient('eSKYWfv72KFX8u5QZSrx6xc6g5crSscG&q');
+const path = require("path");
 
 
 exports.titleOptions = async (req,res,next) => {
@@ -98,26 +99,25 @@ exports.fetchDefaultImages = (req,res,next) => {
     })
 }
 
+// upload image to temp folder
 exports.uploadEventImage = async (req,res,next) => {
     const file = req.file;
     if(!file) return res.status(404).json({error: 'Upload image not succeeded'});
-    let image = {"url":req.file.path, "alt_image": req.file.originalname}
+    let image = {"url":path.resolve(req.file.path)}
     return res.status(200).json({image});
 }
 
+//Update a event's details.
+exports.updateEvent = async (req,res,next) => {
+  const id = req.body._id;
+  const updatedEvent = req.body;
+  if(!updatedEvent) return res.status(404).json({error:"can't update an empty event"});
+  const event = await Event.findByIdAndUpdate(id,updatedEvent);
+  res.status(200).json({
+    event:_.pick(event,['_id','title','image'])
+  });
+};
 
-// add to save image function
-/*
-console.log(req.file.path);
-const eventId = req.body.id;
-if(!eventId) return res.status(404).json({error: 'Please provide an event id'});
-const eventImage = req.file;
-let event = await User.findById(id);
-if(!event) return res.status(404).json({error: 'No valid entry found for provided ID'});
-event.image_url = eventImage;
-const result = await event.save();
-return res.status(200).json({result});
-*/
 
 ////////////////// old routes ///////////////////////////////
 /*

@@ -9,7 +9,7 @@ const multer = require('multer');
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/temp');
+    cb(null, 'public/assets');
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname);
@@ -17,7 +17,7 @@ var storage = multer.diskStorage({
 })
 
 const fileFilter = (req, file, cb) => {
-  if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/gif'){
+  if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/gif'){
       cb(null, true);
   }else{
     cb(new Error('File extension is not valid'), false);
@@ -49,6 +49,7 @@ router.post('/images', eventController.fetchDefaultImages);
 
 // Event CRUD
 router.post('/', eventController.createEvent);
+router.put('/',eventController.updateEvent);
 router.post('/upload/event-image', upload.single('eventImage'), eventController.uploadEventImage);
 router.get('/:eventId',eventController.getEvent);
 module.exports = router;

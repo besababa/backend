@@ -103,19 +103,29 @@ exports.fetchDefaultImages = (req,res,next) => {
 exports.uploadEventImage = async (req,res,next) => {
     const file = req.file;
     if(!file) return res.status(404).json({error: 'Upload image not succeeded'});
-    let image = {"url":req.protocol + '://' + req.get('host') + '/' + req.file.path}
+    let image = {"url":'http://api.besababa.com/' + req.file.path}
+    //let image = {"url":req.protocol + '://' + req.get('host') + '/' + req.file.path}
     return res.status(200).json({image});
 }
 
 //Update a event's details.
 exports.updateEvent = async (req,res,next) => {
   const id = req.body._id;
-  const updatedEvent = req.body;
-  if(!updatedEvent) return res.status(404).json({error:"can't update an empty event"});
-  const event = await Event.findByIdAndUpdate(id,updatedEvent);
+  const image = req.body.image;
+
+  if(image){
+    const newImage = image.replace("temp", "images");
+    fs.rename(image, newImage, (err) => {
+      if (err) throw err;
+    });
+  }
+  req.body.image = newImage;
+  if(!req.body) return res.status(404).json({error:"can't update an empty event"});
+  const event = await Event.findByIdAndUpdate(id,req.body);
   res.status(200).json({
     event:_.pick(event,['_id','title','image'])
   });
+
 };
 
 

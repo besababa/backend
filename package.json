@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/shlomi-atzmon/eventz#readme",
   "dependencies": {
+    "aws-sdk": "^2.295.0",
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
     "config": "^1.30.0",
@@ -37,6 +38,7 @@
     "mongoose": "5.0.1",
     "morgan": "^1.9.0",
     "multer": "^1.3.1",
+    "multer-s3": "^2.7.0",
     "nodemailer": "^4.6.7",
     "underscore": "^1.9.1",
     "xoauth2": "^1.2.0"

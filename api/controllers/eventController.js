@@ -99,16 +99,14 @@ exports.fetchDefaultImages = (req,res,next) => {
     })
 }
 
-// upload image to temp folder
+// Upload image to temp folder
 exports.uploadEventImage = async (req,res,next) => {
-    const file = req.file;
+    const file = req.file.location;
     if(!file) return res.status(404).json({error: 'Upload image not succeeded'});
-    let image = {"url":'http://api.besababa.com/' + req.file.path}
-    //let image = {"url":req.protocol + '://' + req.get('host') + '/' + req.file.path}
-    return res.status(200).json({image});
+    return res.status(200).json({"url":file});
 }
 
-//Update a event's details.
+// Update a event's details.
 exports.updateEvent = async (req,res,next) => {
   const id = req.body._id;
   const image = req.body.image;
@@ -125,7 +123,6 @@ exports.updateEvent = async (req,res,next) => {
   res.status(200).json({
     event:_.pick(event,['_id','title','image'])
   });
-
 };
 
 

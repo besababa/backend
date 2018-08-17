@@ -1,5 +1,7 @@
 {
   "mongoUrl":"MONGODB_URL",
   "appPort":"PORT",
-  "jwtPrivateKey":"BESABABA_JWT"
+  "jwtPrivateKey":"BESABABA_JWT",
+  "secretAccessKey":"AWS_SECRET_ACCESS_KEY",
+  "accessKeyId":"AWS_ACCESS_KEY_ID"
 }

@@ -1,5 +1,7 @@
 {
   "applictionName": "BeSababa",
   "jwtPrivateKey": "",
-  "appPort": 3000
+  "appPort": 3000,
+  "secretAccessKey":"AWS_SECRET_ACCESS_KEY",
+  "accessKeyId":"AWS_ACCESS_KEY_ID"
 }

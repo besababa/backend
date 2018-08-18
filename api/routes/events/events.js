@@ -5,7 +5,7 @@ const Event = require('../../models/events/event');
 const User = require('../../models/users/user');
 const eventController = require ('../../controllers/eventController');
 const OnThisDay = require('../../models/helpers/onThisDay');
-const { profileImage } = require('../../utils/imageUpload.js');
+const FileUploader = require('../../services/FileUploader.js');
 /////old reoutes///
 /*
 router.post('/', eventController.createEvent);
@@ -24,6 +24,6 @@ router.post('/images', eventController.fetchDefaultImages);
 // Event CRUD
 router.post('/', eventController.createEvent);
 router.put('/',eventController.updateEvent);
-router.post('/upload/event-image', profileImage.single('eventImage'), eventController.uploadEventImage);
+router.post('/upload/event-image', new FileUploader('ams3.digitaloceanspaces.com','temp/').store().single('eventImage'), eventController.uploadEventImage);
 router.get('/:eventId',eventController.getEvent);
 module.exports = router;

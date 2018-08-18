@@ -8,7 +8,7 @@ const { OnThisDay } = require('../models/helpers/onThisDay');
 const _ = require('lodash');
 var GphApiClient = require('giphy-js-sdk-core');
 client = GphApiClient('eSKYWfv72KFX8u5QZSrx6xc6g5crSscG&q');
-const path = require('path');
+const FileUploader = require('../services/FileUploader.js');
 
 
 exports.titleOptions = async (req,res,next) => {

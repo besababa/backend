@@ -1,6 +1,6 @@
 const express = require('express');
 const config = require('config');
-const aws = require('aws-sdk');
+const AWS = require('aws-sdk');
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 
@@ -13,9 +13,9 @@ class FileUploader {
 
   store(){
 
-    const spacesEndpoint = new aws.Endpoint(this.spacesEndpoint);
+    const spacesEndpoint = new AWS.Endpoint(this.spacesEndpoint);
     const folder = this.destinationFolder;
-    const s3 = new aws.S3({
+    const s3 = new AWS.S3({
       endpoint: spacesEndpoint,
       accessKeyId: config.get('accessKeyId'),
       secretAccessKey: config.get('secretAccessKey')

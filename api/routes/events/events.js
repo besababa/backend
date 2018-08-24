@@ -23,7 +23,7 @@ router.post('/images', eventController.fetchDefaultImages);
 
 // Event CRUD
 router.post('/', eventController.createEvent);
-router.put('/',eventController.updateEvent);
+router.put('/',eventController.startUpdateEvent);
 router.post('/upload/event-image', new FileUploader('ams3.digitaloceanspaces.com','temp/').store().single('eventImage'), eventController.uploadEventImage);
 router.get('/:eventId',eventController.getEvent);
 module.exports = router;

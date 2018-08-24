@@ -8,7 +8,8 @@ const { OnThisDay } = require('../models/helpers/onThisDay');
 const _ = require('lodash');
 var GphApiClient = require('giphy-js-sdk-core');
 client = GphApiClient('eSKYWfv72KFX8u5QZSrx6xc6g5crSscG&q');
-const FileUploader = require('../services/FileUploader.js');
+const config = require('config');
+const AWS = require('aws-sdk');
 
 
 exports.titleOptions = async (req,res,next) => {
@@ -106,23 +107,46 @@ exports.uploadEventImage = async (req,res,next) => {
     return res.status(200).json({"url":file});
 }
 
-// Update a event's details.
-exports.updateEvent = async (req,res,next) => {
+// Start Update an Event.
+exports.startUpdateEvent = async (req,res,next) => {
   const id = req.body._id;
+  const title = req.body.title;
   const image = req.body.image;
 
-  if(image){
-    const newImage = image.replace("temp", "images");
-    fs.rename(image, newImage, (err) => {
-      if (err) throw err;
-    });
-  }
-  req.body.image = newImage;
-  if(!req.body) return res.status(404).json({error:"can't update an empty event"});
-  const event = await Event.findByIdAndUpdate(id,req.body);
-  res.status(200).json({
-    event:_.pick(event,['_id','title','image'])
+  if(!id || !title || !image) return res.status(404).json({error:"can't update an empty event"});
+
+  let imgPoint = image.split("/");
+  imgPoint = imgPoint[imgPoint.length-1];
+  const OLD_KEY = '/temp/' + imgPoint;
+  const OLD_DELETE =  'temp/' + imgPoint;
+  const NEW_KEY = 'images/' + imgPoint;
+  const spacesEndpoint = new AWS.Endpoint('ams3.digitaloceanspaces.com');
+  const s3 = new AWS.S3({
+    endpoint: spacesEndpoint,
+    accessKeyId: config.get('accessKeyId'),
+    secretAccessKey: config.get('secretAccessKey')
   });
+
+  const bucket = 'besababa';
+  s3.copyObject({
+    Bucket: bucket,
+    CopySource: `${bucket}${OLD_KEY}`,
+    Key: `${NEW_KEY}`
+  })
+  .promise()
+  .then(() => s3.deleteObject({
+      Bucket: bucket,
+      Key: `${OLD_DELETE}`,
+    })
+    .promise())
+    .catch((e) => console.error(e))
+
+   const newImage = image.replace("temp", "images");
+   req.body.image = newImage;
+   const event = await Event.findByIdAndUpdate(id,req.body, {new: true});
+   res.status(200).json({
+     event:_.pick(event,['_id','title','image'])
+   });
 };
 
 

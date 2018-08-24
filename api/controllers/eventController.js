@@ -105,7 +105,8 @@ exports.uploadEventImage = async (req,res,next) => {
     const file = req.file.location;
     if(!file) return res.status(404).json({error: 'Upload image not succeeded'});
     return res.status(200).json({"url":file});
-  }
+}
+
 // Start Update an Event.
 exports.startUpdateEvent = async (req,res,next) => {
   const id = req.body._id;
@@ -131,6 +132,7 @@ exports.startUpdateEvent = async (req,res,next) => {
     Bucket: bucket,
     CopySource: `${bucket}${OLD_KEY}`,
     Key: `${NEW_KEY}`
+    acl: 'public-read',
   })
   .promise()
   .then(() => s3.deleteObject({

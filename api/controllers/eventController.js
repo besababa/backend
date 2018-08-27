@@ -131,8 +131,8 @@ exports.startUpdateEvent = async (req,res,next) => {
   s3.copyObject({
     Bucket: bucket,
     CopySource: `${bucket}${OLD_KEY}`,
-    Key: `${NEW_KEY}`
-    acl: 'public-read',
+    Key: `${NEW_KEY}`,
+    acl: 'public-read'
   })
   .promise()
   .then(() => s3.deleteObject({
